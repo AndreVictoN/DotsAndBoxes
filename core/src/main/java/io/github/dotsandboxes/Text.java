@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Text {
+import io.github.dotsandboxes.utils.Drawables;
+
+public class Text implements Drawables
+{
     BitmapFont font;
     CharSequence text;
 
@@ -15,11 +18,13 @@ public class Text {
         font.getData().setScale(2f);
     }
 
-    public void drawText(SpriteBatch batch)
+    @Override
+    public void draw(SpriteBatch batch)
     {
         font.draw(batch, text, 600, 950);
     }
 
+    @Override
     public void dispose()
     {
         font.dispose();
