@@ -27,6 +27,7 @@ public class Lines implements Drawables
     private ArrayList<Integer> fourthColumn;
     private ArrayList<Integer> fifthColumn;
     private ArrayList<Integer> sixthColumn;
+    private ArrayList<Square> squares;
     private boolean[] isHovering;
     private boolean[] isClicked;
 
@@ -34,6 +35,7 @@ public class Lines implements Drawables
     {
         this.sprites = new ArrayList<>();
         this.polygons = new ArrayList<>();
+        this.squares = new ArrayList<>();
         this.isHovering = new boolean[60];
         this.isClicked = new boolean[60];
         this.lineTexture = new Texture("line.png");
@@ -267,24 +269,42 @@ public class Lines implements Drawables
                 if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
+                    Square square = new Square();
+                    squares.add(square); square.setPosition(sprites.get(i + 5).getX(), sprites.get(i + 5).getY() - sprites.get(i + 5).getHeight());
                 }
             }
             case 55, 56, 57, 58, 59 -> {
                 if((isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) || (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
+                    if(isClicked[sixthColumn.get(fifthColumn.indexOf(i))]) {
+                        Square square = new Square();
+                        squares.add(square); square.setPosition(sprites.get(sixthColumn.get(fifthColumn.indexOf(i))).getX() + 10, sprites.get(sixthColumn.get(fifthColumn.indexOf(i))).getY() - 16);
+                    }else if(isClicked[i-5]){
+                        Square square = new Square();
+                        squares.add(square); square.setPosition(sprites.get(i).getX() + 5, sprites.get(i ).getY() - sprites.get(i).getHeight());
+                    }
                 }
             }
             case 5, 11, 17, 23, 29 -> {
                 if((isClicked[i] && isClicked[fifthColumn.get(sixthColumn.indexOf(i))] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
+                    Square square = new Square();
+                    squares.add(square); square.setPosition(sprites.get(i).getX() + 12, sprites.get(i).getY() - sprites.get(i).getHeight() - 5);
                 }
             }
             default -> {
                 if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) || (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
+                    if(isClicked[i+5]){
+                        Square square = new Square();
+                        squares.add(square); square.setPosition(sprites.get(i + 5).getX() + 5, sprites.get(i + 5).getY() - sprites.get(i + 5).getHeight());
+                    }else if(isClicked[i-5]){
+                        Square square = new Square();
+                        squares.add(square); square.setPosition(sprites.get(i).getX() + 4, sprites.get(i).getY() - sprites.get(i).getHeight());
+                    }
                 }
             }
         }
@@ -390,6 +410,22 @@ public class Lines implements Drawables
         for(Sprite sprite : sprites)
         {
             sprite.getTexture().dispose();
+        }
+    }
+
+    public void disposeSquares()
+    {
+        for(Square square : squares)
+        {
+            square.dispose();
+        }
+    }
+
+    public void drawSquares(SpriteBatch batch)
+    {
+        for(Square square : squares)
+        {
+            square.draw(batch);
         }
     }
 }

@@ -63,6 +63,7 @@ public class Main extends ApplicationAdapter {
             dots.draw(batch);
             text.draw(batch);
             lines.draw(batch);
+            lines.drawSquares(batch);
     
             Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePos3);
@@ -87,5 +88,6 @@ public class Main extends ApplicationAdapter {
         text.dispose();
         enterText.dispose();
         lines.dispose();
+        lines.disposeSquares();
     }
 }
