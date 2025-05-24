@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.dotsandboxes.utils.Drawables;
+import io.github.dotsandboxes.utils.Square;
 
 public class Lines implements Drawables
 {
@@ -27,7 +28,6 @@ public class Lines implements Drawables
     private ArrayList<Integer> fourthColumn;
     private ArrayList<Integer> fifthColumn;
     private ArrayList<Integer> sixthColumn;
-    private ArrayList<Square> squares;
     private boolean[] isHovering;
     private boolean[] isClicked;
 
@@ -35,7 +35,6 @@ public class Lines implements Drawables
     {
         this.sprites = new ArrayList<>();
         this.polygons = new ArrayList<>();
-        this.squares = new ArrayList<>();
         this.isHovering = new boolean[60];
         this.isClicked = new boolean[60];
         this.lineTexture = new Texture("line.png");
@@ -139,7 +138,7 @@ public class Lines implements Drawables
         polygons.add(polygon);
     }
 
-    public void checkIfMouseIsHovering(Vector2 mousePos)
+    public void checkIfMouseIsHovering(Vector2 mousePos, Square squares)
     {
         for(int i = 0; i < polygons.size(); i++)
         {
@@ -153,7 +152,7 @@ public class Lines implements Drawables
 
                 if(Gdx.input.isTouched())
                 {
-                    if(!isClicked[i]) changeColor(sprite, i);
+                    if(!isClicked[i]) changeColor(sprite, i, squares);
                 }
             }else
             {
@@ -163,53 +162,53 @@ public class Lines implements Drawables
         }
     }
 
-    private void changeColor(Sprite sprite, int i)
+    private void changeColor(Sprite sprite, int i, Square squares)
     {
         if(isHovering[i] && !isClicked[i]) sprite.setColor(0f, 0f, 0f, 1f);
         isClicked[i] = true;
 
-        checkSquare(i);
+        checkSquare(i, squares);
     }
 
-    private void checkSquare(int i)
+    private void checkSquare(int i, Square squares)
     {   
         if(thirdRow.contains(i))
         {
-            checkSquaresWithRowLines(i, 3);
+            checkSquaresWithRowLines(i, 3, squares);
         }else if(firstRow.contains(i))
         {
-            checkSquaresWithRowLines(i, 1);
+            checkSquaresWithRowLines(i, 1, squares);
         }else if(secondRow.contains(i))
         {
-            checkSquaresWithRowLines(i, 2);
+            checkSquaresWithRowLines(i, 2, squares);
         }else if(fourthRow.contains(i))
         {
-            checkSquaresWithRowLines(i, 4);
+            checkSquaresWithRowLines(i, 4, squares);
         }else if(fifthRow.contains(i))
         {
-            checkSquaresWithRowLines(i, 5);
+            checkSquaresWithRowLines(i, 5, squares);
         }else if(firstColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 1);
+            checkSquaresWithColumnLines(i, 1, squares);
         }else if(secondColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 2);
+            checkSquaresWithColumnLines(i, 2, squares);
         }else if(thirdColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 3);
+            checkSquaresWithColumnLines(i, 3, squares);
         }else if(fourthColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 4);
+            checkSquaresWithColumnLines(i, 4, squares);
         }else if(fifthColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 5);
+            checkSquaresWithColumnLines(i, 5, squares);
         }else if(sixthColumn.contains(i))
         {
-            checkSquaresWithColumnLines(i, 6);
+            checkSquaresWithColumnLines(i, 6, squares);
         }
     }
 
-    private void checkSquaresWithColumnLines(int i, int ColumnNumber)
+    private void checkSquaresWithColumnLines(int i, int ColumnNumber, Square squares)
     {
         int numberToStart = 0;
         int numberToMultiply = 0;
@@ -259,58 +258,116 @@ public class Lines implements Drawables
             }
         }
 
-        switchBoxCheckCasesColumn(i, numberToStart, numberToMultiply);
+        switchBoxCheckCasesColumn(i, numberToStart, numberToMultiply, squares);
     }
 
-    private void switchBoxCheckCasesColumn(int i, int numberToStart, int numberToMultiply)
+    private void switchBoxCheckCasesColumn(int i, int numberToStart, int numberToMultiply, Square squares)
     {
         switch(i) {
             case 35, 36, 37, 38, 39 -> {
                 if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
-                    Square square = new Square();
-                    squares.add(square); square.setPosition(sprites.get(i + 5).getX(), sprites.get(i + 5).getY() - sprites.get(i + 5).getHeight());
+                    checkSquareToShowColumn(i, squares, 'R');
                 }
             }
             case 55, 56, 57, 58, 59 -> {
-                if((isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) || (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
+                if((isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
-                    if(isClicked[sixthColumn.get(fifthColumn.indexOf(i))]) {
-                        Square square = new Square();
-                        squares.add(square); square.setPosition(sprites.get(sixthColumn.get(fifthColumn.indexOf(i))).getX() + 10, sprites.get(sixthColumn.get(fifthColumn.indexOf(i))).getY() - 16);
-                    }else if(isClicked[i-5]){
-                        Square square = new Square();
-                        squares.add(square); square.setPosition(sprites.get(i).getX() + 5, sprites.get(i ).getY() - sprites.get(i).getHeight());
-                    }
+                    checkSquareToShowColumn(i, squares, 'R');
+                    checkSquareToShowColumn(i, squares, 'L');
+                }else if(isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowColumn(i, squares, 'R');
+                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowColumn(i, squares, 'L');
                 }
             }
             case 5, 11, 17, 23, 29 -> {
                 if((isClicked[i] && isClicked[fifthColumn.get(sixthColumn.indexOf(i))] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
-                    Square square = new Square();
-                    squares.add(square); square.setPosition(sprites.get(i).getX() + 12, sprites.get(i).getY() - sprites.get(i).getHeight() - 5);
+                    checkSquareToShowColumn(i, squares, 'L');
                 }
             }
             default -> {
-                if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) || (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
+                if ((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
                 {
                     System.out.println("Square completed! " + i);
-                    if(isClicked[i+5]){
-                        Square square = new Square();
-                        squares.add(square); square.setPosition(sprites.get(i + 5).getX() + 5, sprites.get(i + 5).getY() - sprites.get(i + 5).getHeight());
-                    }else if(isClicked[i-5]){
-                        Square square = new Square();
-                        squares.add(square); square.setPosition(sprites.get(i).getX() + 4, sprites.get(i).getY() - sprites.get(i).getHeight());
-                    }
+                    checkSquareToShowColumn(i, squares, 'R');
+                    checkSquareToShowColumn(i, squares, 'L');
+                }else if(isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowColumn(i, squares, 'R');
+                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowColumn(i, squares, 'L');
                 }
             }
         }
     }
 
-    private void checkSquaresWithRowLines(int i, int RowNumber)
+    private void checkSquareToShowColumn(int i, Square squares, char leftOrRight)
+    {
+        if(i == 35) {if(!squares.getIsActive()[0]) squares.changeColor(0);}
+        else if(i == 36) {if(!squares.getIsActive()[5]) squares.changeColor(5);}
+        else if(i == 37) {if(!squares.getIsActive()[10]) squares.changeColor(10);}
+        else if(i == 38) {if(!squares.getIsActive()[15]) squares.changeColor(15);}
+        else if(i == 39) {if(!squares.getIsActive()[20]) squares.changeColor(20);}
+        else if(i == 5) {if(!squares.getIsActive()[4]) squares.changeColor(4);}
+        else if(i == 11) {if(!squares.getIsActive()[9]) squares.changeColor(9);}
+        else if(i == 17) {if(!squares.getIsActive()[14]) squares.changeColor(14);}
+        else if(i == 23) {if(!squares.getIsActive()[19]) squares.changeColor(19);}
+        else if(i == 29) {if(!squares.getIsActive()[24]) squares.changeColor(24);}
+        else if(i == 40 && leftOrRight == 'R') {if(!squares.getIsActive()[1]) squares.changeColor(1);}
+        else if(i == 40 && leftOrRight == 'L') {if(!squares.getIsActive()[0]) squares.changeColor(0);}
+        else if(i == 41 && leftOrRight == 'R') {if(!squares.getIsActive()[6]) squares.changeColor(6);}
+        else if(i == 41 && leftOrRight == 'L') {if(!squares.getIsActive()[5]) squares.changeColor(5);}
+        else if(i == 42 && leftOrRight == 'R') {if(!squares.getIsActive()[11]) squares.changeColor(11);}
+        else if(i == 42 && leftOrRight == 'L') {if(!squares.getIsActive()[10]) squares.changeColor(10);}
+        else if(i == 43 && leftOrRight == 'R') {if(!squares.getIsActive()[16]) squares.changeColor(16);}
+        else if(i == 43 && leftOrRight == 'L') {if(!squares.getIsActive()[15]) squares.changeColor(15);}
+        else if(i == 44 && leftOrRight == 'R') {if(!squares.getIsActive()[21]) squares.changeColor(21);}
+        else if(i == 44 && leftOrRight == 'L') {if(!squares.getIsActive()[20]) squares.changeColor(20);}
+        else if(i == 45 && leftOrRight == 'R') {if(!squares.getIsActive()[2]) squares.changeColor(2);}
+        else if(i == 45 && leftOrRight == 'L') {if(!squares.getIsActive()[1]) squares.changeColor(1);}
+        else if(i == 46 && leftOrRight == 'R') {if(!squares.getIsActive()[7]) squares.changeColor(7);}
+        else if(i == 46 && leftOrRight == 'L') {if(!squares.getIsActive()[6]) squares.changeColor(6);}
+        else if(i == 47 && leftOrRight == 'R') {if(!squares.getIsActive()[12]) squares.changeColor(12);}
+        else if(i == 47 && leftOrRight == 'L') {if(!squares.getIsActive()[11]) squares.changeColor(11);}
+        else if(i == 48 && leftOrRight == 'R') {if(!squares.getIsActive()[17]) squares.changeColor(17);}
+        else if(i == 48 && leftOrRight == 'L') {if(!squares.getIsActive()[16]) squares.changeColor(16);}
+        else if(i == 49 && leftOrRight == 'R') {if(!squares.getIsActive()[22]) squares.changeColor(22);}
+        else if(i == 49 && leftOrRight == 'L') {if(!squares.getIsActive()[21]) squares.changeColor(21);}
+        else if(i == 50 && leftOrRight == 'R') {if(!squares.getIsActive()[3]) squares.changeColor(3);}
+        else if(i == 50 && leftOrRight == 'L') {if(!squares.getIsActive()[2]) squares.changeColor(2);}
+        else if(i == 51 && leftOrRight == 'R') {if(!squares.getIsActive()[8]) squares.changeColor(8);}
+        else if(i == 51 && leftOrRight == 'L') {if(!squares.getIsActive()[7]) squares.changeColor(7);}
+        else if(i == 52 && leftOrRight == 'R') {if(!squares.getIsActive()[13]) squares.changeColor(13);}
+        else if(i == 52 && leftOrRight == 'L') {if(!squares.getIsActive()[12]) squares.changeColor(12);}
+        else if(i == 53 && leftOrRight == 'R') {if(!squares.getIsActive()[18]) squares.changeColor(18);}
+        else if(i == 53 && leftOrRight == 'L') {if(!squares.getIsActive()[17]) squares.changeColor(17);}
+        else if(i == 54 && leftOrRight == 'R') {if(!squares.getIsActive()[23]) squares.changeColor(23);}
+        else if(i == 54 && leftOrRight == 'L') {if(!squares.getIsActive()[22]) squares.changeColor(22);}
+        else if(i == 55 && leftOrRight == 'R') {if(!squares.getIsActive()[4]) squares.changeColor(4);}
+        else if(i == 55 && leftOrRight == 'L') {if(!squares.getIsActive()[3]) squares.changeColor(3);}
+        else if(i == 56 && leftOrRight == 'R') {if(!squares.getIsActive()[9]) squares.changeColor(9);}
+        else if(i == 56 && leftOrRight == 'L') {if(!squares.getIsActive()[8]) squares.changeColor(8);}
+        else if(i == 57 && leftOrRight == 'R') {if(!squares.getIsActive()[14]) squares.changeColor(14);}
+        else if(i == 57 && leftOrRight == 'L') {if(!squares.getIsActive()[13]) squares.changeColor(13);}
+        else if(i == 58 && leftOrRight == 'R') {if(!squares.getIsActive()[19]) squares.changeColor(19);}
+        else if(i == 58 && leftOrRight == 'L') {if(!squares.getIsActive()[18]) squares.changeColor(18);}
+        else if(i == 59 && leftOrRight == 'R') {if(!squares.getIsActive()[24]) squares.changeColor(24);}
+        else if(i == 59 && leftOrRight == 'L') {if(!squares.getIsActive()[23]) squares.changeColor(23);}
+    }
+
+    private void checkSquaresWithRowLines(int i, int RowNumber, Square squares)
     {
         int numberToSum = 0;
         int numberToStartLeft = 0;
@@ -359,49 +416,127 @@ public class Lines implements Drawables
             }
         }
 
-        switchBoxCheckCasesRow(i, numberToSum, numberToStartLeft, numberToStartRight);
+        switchBoxCheckCasesRow(i, numberToSum, numberToStartLeft, numberToStartRight, squares);
     }
 
-    private void switchBoxCheckCasesRow(int i, int numberToSum, int numberToStartLeft, int numberToStartRight)
+    private void switchBoxCheckCasesRow(int i, int numberToSum, int numberToStartLeft, int numberToStartRight, Square squares)
     {
         switch (i) {
             case 30, 31, 32, 33 -> {
                 if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1])
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'D');
                 }
             }
             case 34 -> {
                 if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 1])
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'D');
                 }
             }
             case 0, 1, 2, 3 -> {
                 if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToSum + numberToStartRight])
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
                 }
             }
             case 4 -> {
                 if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight])
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
                 }
             }
             case 10, 16, 22, 28 -> {
-                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]) || (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6]))
+                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6]))
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
+                    checkSquareToShowRow(i, squares, 'D');
+                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
+                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'D');
                 }
             }
             default -> {
-                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum]) || (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1]))
+                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1]))
                 {
                     System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
+                    checkSquareToShowRow(i, squares, 'D');
+                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'U');
+                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1])
+                {
+                    System.out.println("Square completed! " + i);
+                    checkSquareToShowRow(i, squares, 'D');
                 }
             }
         }
+    }
+
+    private void checkSquareToShowRow(int i, Square squares, char upOrDown)
+    {
+        if(i == 30) {if(!squares.getIsActive()[20]) squares.changeColor(20);}
+        else if(i == 31) {if(!squares.getIsActive()[21]) squares.changeColor(21);}
+        else if(i == 32) {if(!squares.getIsActive()[22]) squares.changeColor(22);}
+        else if(i == 33) {if(!squares.getIsActive()[23]) squares.changeColor(23);}
+        else if(i == 34) {if(!squares.getIsActive()[24]) squares.changeColor(24);}
+        else if(i == 0) {if(!squares.getIsActive()[0]) squares.changeColor(0);}
+        else if(i == 1) {if(!squares.getIsActive()[1]) squares.changeColor(1);}
+        else if(i == 2) {if(!squares.getIsActive()[2]) squares.changeColor(2);}
+        else if(i == 3) {if(!squares.getIsActive()[3]) squares.changeColor(3);}
+        else if(i == 4) {if(!squares.getIsActive()[4]) squares.changeColor(4);}
+        else if(i == 6 && upOrDown == 'U') {if(!squares.getIsActive()[5]) squares.changeColor(5);}
+        else if(i == 6 && upOrDown == 'D') {if(!squares.getIsActive()[0]) squares.changeColor(0);}
+        else if(i == 7 && upOrDown == 'U') {if(!squares.getIsActive()[6]) squares.changeColor(6);}
+        else if(i == 7 && upOrDown == 'D') {if(!squares.getIsActive()[1]) squares.changeColor(1);}
+        else if(i == 8 && upOrDown == 'U') {if(!squares.getIsActive()[7]) squares.changeColor(7);}
+        else if(i == 8 && upOrDown == 'D') {if(!squares.getIsActive()[2]) squares.changeColor(2);}
+        else if(i == 9 && upOrDown == 'U') {if(!squares.getIsActive()[8]) squares.changeColor(8);}
+        else if(i == 9 && upOrDown == 'D') {if(!squares.getIsActive()[3]) squares.changeColor(3);}
+        else if(i == 10 && upOrDown == 'U') {if(!squares.getIsActive()[9]) squares.changeColor(9);}
+        else if(i == 10 && upOrDown == 'D') {if(!squares.getIsActive()[4]) squares.changeColor(4);}
+        else if(i == 12 && upOrDown == 'U') {if(!squares.getIsActive()[10]) squares.changeColor(10);}
+        else if(i == 12 && upOrDown == 'D') {if(!squares.getIsActive()[5]) squares.changeColor(5);}
+        else if(i == 13 && upOrDown == 'U') {if(!squares.getIsActive()[11]) squares.changeColor(11);}
+        else if(i == 13 && upOrDown == 'D') {if(!squares.getIsActive()[6]) squares.changeColor(6);}
+        else if(i == 14 && upOrDown == 'U') {if(!squares.getIsActive()[12]) squares.changeColor(12);}
+        else if(i == 14 && upOrDown == 'D') {if(!squares.getIsActive()[7]) squares.changeColor(7);}
+        else if(i == 15 && upOrDown == 'U') {if(!squares.getIsActive()[13]) squares.changeColor(13);}
+        else if(i == 15 && upOrDown == 'D') {if(!squares.getIsActive()[8]) squares.changeColor(8);}
+        else if(i == 16 && upOrDown == 'U') {if(!squares.getIsActive()[14]) squares.changeColor(14);}
+        else if(i == 16 && upOrDown == 'D') {if(!squares.getIsActive()[9]) squares.changeColor(9);}
+        else if(i == 18 && upOrDown == 'U') {if(!squares.getIsActive()[15]) squares.changeColor(15);}
+        else if(i == 18 && upOrDown == 'D') {if(!squares.getIsActive()[10]) squares.changeColor(10);}
+        else if(i == 19 && upOrDown == 'U') {if(!squares.getIsActive()[16]) squares.changeColor(16);}
+        else if(i == 19 && upOrDown == 'D') {if(!squares.getIsActive()[11]) squares.changeColor(11);}
+        else if(i == 20 && upOrDown == 'U') {if(!squares.getIsActive()[17]) squares.changeColor(17);}
+        else if(i == 20 && upOrDown == 'D') {if(!squares.getIsActive()[12]) squares.changeColor(12);}
+        else if(i == 21 && upOrDown == 'U') {if(!squares.getIsActive()[18]) squares.changeColor(18);}
+        else if(i == 21 && upOrDown == 'D') {if(!squares.getIsActive()[13]) squares.changeColor(13);}
+        else if(i == 22 && upOrDown == 'U') {if(!squares.getIsActive()[19]) squares.changeColor(19);}
+        else if(i == 22 && upOrDown == 'D') {if(!squares.getIsActive()[14]) squares.changeColor(14);}
+        else if(i == 24 && upOrDown == 'U') {if(!squares.getIsActive()[20]) squares.changeColor(20);}
+        else if(i == 24 && upOrDown == 'D') {if(!squares.getIsActive()[15]) squares.changeColor(15);}
+        else if(i == 25 && upOrDown == 'U') {if(!squares.getIsActive()[21]) squares.changeColor(21);}
+        else if(i == 25 && upOrDown == 'D') {if(!squares.getIsActive()[16]) squares.changeColor(16);}
+        else if(i == 26 && upOrDown == 'U') {if(!squares.getIsActive()[22]) squares.changeColor(22);}
+        else if(i == 26 && upOrDown == 'D') {if(!squares.getIsActive()[17]) squares.changeColor(17);}
+        else if(i == 27 && upOrDown == 'U') {if(!squares.getIsActive()[23]) squares.changeColor(23);}
+        else if(i == 27 && upOrDown == 'D') {if(!squares.getIsActive()[18]) squares.changeColor(18);}
+        else if(i == 28 && upOrDown == 'U') {if(!squares.getIsActive()[24]) squares.changeColor(24);}
+        else if(i == 28 && upOrDown == 'D') {if(!squares.getIsActive()[19]) squares.changeColor(19);}
     }
 
     @Override
@@ -410,22 +545,6 @@ public class Lines implements Drawables
         for(Sprite sprite : sprites)
         {
             sprite.getTexture().dispose();
-        }
-    }
-
-    public void disposeSquares()
-    {
-        for(Square square : squares)
-        {
-            square.dispose();
-        }
-    }
-
-    public void drawSquares(SpriteBatch batch)
-    {
-        for(Square square : squares)
-        {
-            square.draw(batch);
         }
     }
 }

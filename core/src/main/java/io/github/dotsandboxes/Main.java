@@ -22,6 +22,8 @@ public class Main extends ApplicationAdapter {
     Text text;
     Text enterText;
     Lines lines;
+    SquarePlayer squaresPlayer;
+    SquareEnemy squaresEnemy;
 
     @Override
     public void create() {
@@ -34,6 +36,8 @@ public class Main extends ApplicationAdapter {
         text = new Text();
         enterText = new Text(Screen.MAIN_MENU);
         lines = new Lines();
+        squaresPlayer = new SquarePlayer();
+        squaresEnemy = new SquareEnemy();
 
         Gdx.input.setInputProcessor(new InputAdapter() 
         {
@@ -63,13 +67,14 @@ public class Main extends ApplicationAdapter {
             dots.draw(batch);
             text.draw(batch);
             lines.draw(batch);
-            lines.drawSquares(batch);
+            squaresPlayer.draw(batch);
+            squaresEnemy.draw(batch);
     
             Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePos3);
     
             Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
-            lines.checkIfMouseIsHovering(mousePos);
+            lines.checkIfMouseIsHovering(mousePos, squaresPlayer);
         }else if(currentScreen == Screen.MAIN_MENU)
         {
             ScreenUtils.clear(233f, 233f, 233f, 1f);
@@ -88,6 +93,7 @@ public class Main extends ApplicationAdapter {
         text.dispose();
         enterText.dispose();
         lines.dispose();
-        lines.disposeSquares();
+        squaresPlayer.dispose();
+        squaresEnemy.dispose();
     }
 }
