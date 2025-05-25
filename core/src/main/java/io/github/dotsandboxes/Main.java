@@ -24,6 +24,7 @@ public class Main extends ApplicationAdapter {
     Lines lines;
     SquarePlayer squaresPlayer;
     SquareEnemy squaresEnemy;
+    Bot bot;
 
     @Override
     public void create() {
@@ -38,6 +39,7 @@ public class Main extends ApplicationAdapter {
         lines = new Lines();
         squaresPlayer = new SquarePlayer();
         squaresEnemy = new SquareEnemy();
+        bot = new Bot(lines, squaresEnemy, squaresPlayer);
 
         Gdx.input.setInputProcessor(new InputAdapter() 
         {
@@ -74,7 +76,13 @@ public class Main extends ApplicationAdapter {
             camera.unproject(mousePos3);
     
             Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
-            lines.checkIfMouseIsHovering(mousePos, squaresPlayer);
+            lines.checkIfMouseIsHovering(mousePos, squaresPlayer, bot);
+            if(bot.turn)
+            {
+                bot.playTurn();
+                bot.turn = false;
+            }
+            squaresPlayer.setIsActive(squaresEnemy.getIsActive());
         }else if(currentScreen == Screen.MAIN_MENU)
         {
             ScreenUtils.clear(233f, 233f, 233f, 1f);

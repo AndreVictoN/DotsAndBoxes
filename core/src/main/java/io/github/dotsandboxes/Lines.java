@@ -59,6 +59,16 @@ public class Lines implements Drawables
         addRowsAndColumnsToArrays();
     }
 
+    public boolean[] getIsClicked()
+    {
+        return isClicked;
+    }
+
+    public ArrayList<Sprite> getSprites()
+    {
+        return sprites;
+    }
+
     private void addRowsAndColumnsToArrays()
     {
         this.firstRow = new ArrayList<>(){{add(0); add(6); add(12); add(18); add(24); add(30);}};
@@ -138,7 +148,7 @@ public class Lines implements Drawables
         polygons.add(polygon);
     }
 
-    public void checkIfMouseIsHovering(Vector2 mousePos, Square squares)
+    public void checkIfMouseIsHovering(Vector2 mousePos, Square squares, Bot bot)
     {
         for(int i = 0; i < polygons.size(); i++)
         {
@@ -152,7 +162,7 @@ public class Lines implements Drawables
 
                 if(Gdx.input.isTouched())
                 {
-                    if(!isClicked[i]) changeColor(sprite, i, squares);
+                    if(!isClicked[i]) changeColor(sprite, i, squares, bot);
                 }
             }else
             {
@@ -162,15 +172,17 @@ public class Lines implements Drawables
         }
     }
 
-    private void changeColor(Sprite sprite, int i, Square squares)
+    private void changeColor(Sprite sprite, int i, Square squares, Bot bot)
     {
         if(isHovering[i] && !isClicked[i]) sprite.setColor(0f, 0f, 0f, 1f);
         isClicked[i] = true;
-
+        
         checkSquare(i, squares);
+
+        bot.turn = true;
     }
 
-    private void checkSquare(int i, Square squares)
+    public void checkSquare(int i, Square squares)
     {   
         if(thirdRow.contains(i))
         {

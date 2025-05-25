@@ -49,6 +49,20 @@ public class Square implements Drawables
         return isActive;
     }
 
+    public void setIsActive(boolean[] isActive)
+    {
+        for(int i = 0; i < this.isActive.length; i++)
+        {
+            if(this.isActive[i])
+            {
+                isActive[i] = this.isActive[i];
+            }else if(isActive[i])
+            {
+                this.isActive[i] = isActive[i];
+            }
+        }
+    }
+
     public ArrayList<Sprite> getSquares()
     {
         return squares;
@@ -56,7 +70,7 @@ public class Square implements Drawables
 
     public void changeColor(int index)
     {
-        squares.get(index).setColor(squares.get(index).getColor().r, squares.get(index).getColor().g, squares.get(index).getColor().b, 1f);
+        squares.get(index).setColor(squares.get(index).getColor().r, squares.get(index).getColor().g, squares.get(index).getColor().b, 0.5f);
         isActive[index] = true;
     }
 
