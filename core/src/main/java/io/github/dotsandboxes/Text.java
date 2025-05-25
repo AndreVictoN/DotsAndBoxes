@@ -11,6 +11,8 @@ public class Text implements Drawables
 {
     BitmapFont font;
     CharSequence text;
+    int playerPoints;
+    int enemyPoints;
     boolean canFade = false;
 
     public Text()
@@ -28,23 +30,50 @@ public class Text implements Drawables
         {
             text = "Press ENTER to Start";
             font.getData().setScale(1);
-        }
-        else
+        }else if(screen == Screen.GAME)
         {
             text = "Dots & Boxes";
             font.getData().setScale(1.5f);
+        }else if(screen == Screen.RESULTS_MENU) 
+        {
+            text = "Press ENTER to Restart";
+            font.getData().setScale(1);
+        }
+    }
+
+    public void setResults(Screen screen, int playerPoints, int enemyPoints)
+    {
+        if(screen == Screen.RESULTS_MENU && (playerPoints > enemyPoints)) 
+        {
+            text = "         You Won! \nPress ENTER to Restart";
+            font.getData().setScale(1);
+        }
+        else if(screen == Screen.RESULTS_MENU && (playerPoints < enemyPoints)) 
+        {
+            text = "         You Lost... \nPress ENTER to Restart";
+            font.getData().setScale(1);
+        }else if(screen == Screen.GAME)
+        {
+            text = "Player points: " + playerPoints + "\nEnemy points: " + enemyPoints;
+            font.getData().setScale(0.4f);
         }
     }
 
     @Override
     public void draw(SpriteBatch batch)
     {
-        if(this.text == "Dots & Boxes")
+        if(this.text.equals("Dots & Boxes"))
         {
             font.draw(batch, text, 600, 950);
-        }else if(this.text == "Press ENTER to Start")
+        }else if(this.text.equals("Press ENTER to Start"))
         {
             font.draw(batch, text, 530, 540);
+        }else if(this.text.equals("         You Won! \nPress ENTER to Restart") || this.text.equals("         You Lost... \nPress ENTER to Restart"))
+        {
+            font.draw(batch, text, 526, 600);
+        }else if(((String) this.text).contains("Player points: "))
+        {
+            font.draw(batch, text, 100, 850);
         }
     }
 

@@ -28,8 +28,12 @@ public class Lines implements Drawables
     private ArrayList<Integer> fourthColumn;
     private ArrayList<Integer> fifthColumn;
     private ArrayList<Integer> sixthColumn;
+   // private ArrayList<ArrayList<Integer>> MATRIX = new ArrayList<ArrayList<Integer>>(5);
     private boolean[] isHovering;
     private boolean[] isClicked;
+    
+    public int playerPoints;
+    public int enemyPoints;
 
     public Lines()
     {
@@ -38,7 +42,6 @@ public class Lines implements Drawables
         this.isHovering = new boolean[60];
         this.isClicked = new boolean[60];
         this.lineTexture = new Texture("line.png");
-
         for(int i = 0; i < 60; i++)
         {
             Sprite sprite = new Sprite(lineTexture);
@@ -57,6 +60,18 @@ public class Lines implements Drawables
         }
 
         addRowsAndColumnsToArrays();
+    }
+
+    public void resetGame()
+    {
+        for(int i = 0; i < 60; i++)
+        {
+            isClicked[i] = false;
+            isHovering[i] = false;
+            sprites.get(i).setColor(0f, 0f, 0f, 0.5f);
+        }
+        playerPoints = 0;
+        enemyPoints = 0;
     }
 
     public boolean[] getIsClicked()
@@ -177,50 +192,37 @@ public class Lines implements Drawables
         if(isHovering[i] && !isClicked[i]) sprite.setColor(0f, 0f, 0f, 1f);
         isClicked[i] = true;
         
-        checkSquare(i, squares);
-
-        bot.turn = true;
+        checkSquare(i, squares, bot);
     }
 
-    public void checkSquare(int i, Square squares)
+    public boolean checkSquare(int i, Square squares, Bot bot)
     {   
-        if(thirdRow.contains(i))
-        {
-            checkSquaresWithRowLines(i, 3, squares);
-        }else if(firstRow.contains(i))
-        {
-            checkSquaresWithRowLines(i, 1, squares);
-        }else if(secondRow.contains(i))
-        {
-            checkSquaresWithRowLines(i, 2, squares);
-        }else if(fourthRow.contains(i))
-        {
-            checkSquaresWithRowLines(i, 4, squares);
-        }else if(fifthRow.contains(i))
-        {
-            checkSquaresWithRowLines(i, 5, squares);
-        }else if(firstColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 1, squares);
-        }else if(secondColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 2, squares);
-        }else if(thirdColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 3, squares);
-        }else if(fourthColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 4, squares);
-        }else if(fifthColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 5, squares);
-        }else if(sixthColumn.contains(i))
-        {
-            checkSquaresWithColumnLines(i, 6, squares);
-        }
+        if(thirdRow.contains(i)){
+            return checkSquaresWithRowLines(i, 3, squares, bot);
+        }else if(firstRow.contains(i)){
+            return checkSquaresWithRowLines(i, 1, squares, bot);
+        }else if(secondRow.contains(i)){
+            return checkSquaresWithRowLines(i, 2, squares, bot);
+        }else if(fourthRow.contains(i)){
+            return checkSquaresWithRowLines(i, 4, squares, bot);
+        }else if(fifthRow.contains(i)){
+            return checkSquaresWithRowLines(i, 5, squares, bot);
+        }else if(firstColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 1, squares, bot);
+        }else if(secondColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 2, squares, bot);
+        }else if(thirdColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 3, squares, bot);
+        }else if(fourthColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 4, squares, bot);
+        }else if(fifthColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 5, squares, bot);
+        }else if(sixthColumn.contains(i)){
+            return checkSquaresWithColumnLines(i, 6, squares, bot);
+        }else{return false;}
     }
 
-    private void checkSquaresWithColumnLines(int i, int ColumnNumber, Square squares)
+    private boolean checkSquaresWithColumnLines(int i, int ColumnNumber, Square squares, Bot bot)
     {
         int numberToStart = 0;
         int numberToMultiply = 0;
@@ -269,64 +271,74 @@ public class Lines implements Drawables
                 numberToStart = 5;
             }
         }
+        
+        boolean squareFormed = switchBoxCheckCasesColumn(i, numberToStart, numberToMultiply, squares);
+        if(squares instanceof SquarePlayer) {bot.turn = !squareFormed;}
 
-        switchBoxCheckCasesColumn(i, numberToStart, numberToMultiply, squares);
+        return squareFormed;
     }
 
-    private void switchBoxCheckCasesColumn(int i, int numberToStart, int numberToMultiply, Square squares)
+    private boolean switchBoxCheckCasesColumn(int i, int numberToStart, int numberToMultiply, Square squares)
     {
         switch(i) {
             case 35, 36, 37, 38, 39 -> {
-                if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]))
-                {
+                if((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'R');
-                }
+                    return true;
+                }else{return false;}
             }
             case 55, 56, 57, 58, 59 -> {
-                if((isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
-                {
+                if((isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'R');
                     checkSquareToShowColumn(i, squares, 'L');
-                }else if(isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[sixthColumn.get(fifthColumn.indexOf(i))] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'R');
-                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'L');
-                }
+                    return true;
+                }else{return false;}
             }
             case 5, 11, 17, 23, 29 -> {
-                if((isClicked[i] && isClicked[fifthColumn.get(sixthColumn.indexOf(i))] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
-                {
+                if((isClicked[i] && isClicked[fifthColumn.get(sixthColumn.indexOf(i))] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'L');
-                }
+                    return true;
+                }else{return false;}
             }
             default -> {
-                if ((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]))
-                {
+                if ((isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]) && (isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'R');
                     checkSquareToShowColumn(i, squares, 'L');
-                }else if(isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i + 5] && isClicked[numberToStart + (numberToMultiply * 6)] && isClicked[numberToStart + ((numberToMultiply + 1) * 6)]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'R');
-                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i - 5] && isClicked[(numberToStart - 1) + (numberToMultiply * 6)] && isClicked[(numberToStart - 1) + ((numberToMultiply + 1) * 6)]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'L');
-                }
+                    return true;
+                }else{return false;}
             }
         }
     }
 
     private void checkSquareToShowColumn(int i, Square squares, char leftOrRight)
     {
+
+        if(squares instanceof SquareEnemy){
+            enemyPoints++;
+        }else if (squares instanceof SquarePlayer){
+            playerPoints++;
+        }
+
         if(i == 35) {if(!squares.getIsActive()[0]) squares.changeColor(0);}
         else if(i == 36) {if(!squares.getIsActive()[5]) squares.changeColor(5);}
         else if(i == 37) {if(!squares.getIsActive()[10]) squares.changeColor(10);}
@@ -379,7 +391,7 @@ public class Lines implements Drawables
         else if(i == 59 && leftOrRight == 'L') {if(!squares.getIsActive()[23]) squares.changeColor(23);}
     }
 
-    private void checkSquaresWithRowLines(int i, int RowNumber, Square squares)
+    private boolean checkSquaresWithRowLines(int i, int RowNumber, Square squares, Bot bot)
     {
         int numberToSum = 0;
         int numberToStartLeft = 0;
@@ -428,77 +440,85 @@ public class Lines implements Drawables
             }
         }
 
-        switchBoxCheckCasesRow(i, numberToSum, numberToStartLeft, numberToStartRight, squares);
+        boolean squareFormed = switchBoxCheckCasesRow(i, numberToSum, numberToStartLeft, numberToStartRight, squares);
+        if(squares instanceof SquarePlayer) {bot.turn = !squareFormed;}
+        return squareFormed;
     }
 
-    private void switchBoxCheckCasesRow(int i, int numberToSum, int numberToStartLeft, int numberToStartRight, Square squares)
+    private boolean switchBoxCheckCasesRow(int i, int numberToSum, int numberToStartLeft, int numberToStartRight, Square squares)
     {
         switch (i) {
             case 30, 31, 32, 33 -> {
-                if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1])
-                {
+                if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'D');
-                }
+                    return true;
+                }else{return false;}
             }
             case 34 -> {
-                if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 1])
-                {
+                if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[29]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'D');
-                }
+                    return true;
+                }else{return false;}
             }
             case 0, 1, 2, 3 -> {
-                if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToSum + numberToStartRight])
-                {
+                if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToSum + numberToStartRight]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
-                }
+                    return true;
+                }else{return false;}
             }
             case 4 -> {
-                if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight])
-                {
+                if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
-                }
+                    return true;
+                }else{return false;}
             }
             case 10, 16, 22, 28 -> {
-                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6]))
-                {
+                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
                     checkSquareToShowRow(i, squares, 'D');
-                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[(6 * numberToSum) + numberToStartRight]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
-                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + (6 * numberToSum) - 6]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'D');
-                }
+                    return true;
+                }else{return false;}
             }
             default -> {
-                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1]))
-                {
+                if((isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum]) && (isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1])){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
                     checkSquareToShowRow(i, squares, 'D');
-                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i + 6] && isClicked[numberToStartLeft + numberToSum] && isClicked[numberToStartRight + numberToSum]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'U');
-                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1])
-                {
+                    return true;
+                }else if(isClicked[i] && isClicked[i - 6] && isClicked[numberToStartLeft + numberToSum - 1] && isClicked[numberToStartRight + numberToSum - 1]){
                     System.out.println("Square completed! " + i);
                     checkSquareToShowRow(i, squares, 'D');
-                }
+                    return true;
+                }else{return false;}
             }
         }
     }
 
     private void checkSquareToShowRow(int i, Square squares, char upOrDown)
     {
+        if(squares instanceof SquareEnemy){
+            enemyPoints++;
+        }else if (squares instanceof SquarePlayer){
+            playerPoints++;
+        }
+
         if(i == 30) {if(!squares.getIsActive()[20]) squares.changeColor(20);}
         else if(i == 31) {if(!squares.getIsActive()[21]) squares.changeColor(21);}
         else if(i == 32) {if(!squares.getIsActive()[22]) squares.changeColor(22);}

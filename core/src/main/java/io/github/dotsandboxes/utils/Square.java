@@ -44,6 +44,15 @@ public class Square implements Drawables
         }
     }
 
+    public void resetGame()
+    {
+        for(int i = 0; i < squares.size(); i++)
+        {
+            squares.get(i).setColor(squares.get(i).getColor().r, squares.get(i).getColor().g, squares.get(i).getColor().b, 0f);
+            isActive[i] = false;
+        }
+    }
+
     public boolean[] getIsActive()
     {
         return isActive;
