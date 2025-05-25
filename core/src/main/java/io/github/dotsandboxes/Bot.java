@@ -10,6 +10,7 @@ public class Bot {
     private SquarePlayer squaresPlayer;
     private Random random;
     public boolean turn;
+    public boolean completedSquare = false;
 
     public Bot(Lines lines, SquareEnemy squaresEnemy, SquarePlayer squaresPlayer) {
         this.lines = lines;
@@ -37,14 +38,14 @@ public class Bot {
             
             checkCompletedSquares(chosenLine);
             
-            System.out.println("Bot jogou na linha: " + chosenLine);
+            //System.out.println("Bot jogou na linha: " + chosenLine);
         }
 
-        this.turn = false;
+        this.turn = completedSquare;
     }
 
     private void checkCompletedSquares(int lineIndex) {
-        lines.checkSquare(lineIndex, squaresEnemy);
+        completedSquare = lines.checkSquare(lineIndex, squaresEnemy, this);
         //lines.checkSquare(lineIndex, squaresPlayer);
     }
 }

@@ -42,8 +42,6 @@ public class Dots implements Drawables
                 sprite.setPosition(((i % 6) + 3.65f) * 150, ((i / 6) + 0.13f) * 150);
             }
             sprite.draw(batch);
-
-            //batch.draw(sprite, (i % 4) * 100, (i / 4) * 100);
         }
     }
 
