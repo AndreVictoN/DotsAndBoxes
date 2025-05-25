@@ -28,8 +28,10 @@ public class Lines implements Drawables
     private ArrayList<Integer> fourthColumn;
     private ArrayList<Integer> fifthColumn;
     private ArrayList<Integer> sixthColumn;
+   // private ArrayList<ArrayList<Integer>> MATRIX = new ArrayList<ArrayList<Integer>>(5);
     private boolean[] isHovering;
     private boolean[] isClicked;
+    private int countSquares;
 
     public Lines()
     {
@@ -38,7 +40,7 @@ public class Lines implements Drawables
         this.isHovering = new boolean[60];
         this.isClicked = new boolean[60];
         this.lineTexture = new Texture("line.png");
-
+        this.countSquares = 0;
         for(int i = 0; i < 60; i++)
         {
             Sprite sprite = new Sprite(lineTexture);
@@ -320,13 +322,35 @@ public class Lines implements Drawables
                 {
                     System.out.println("Square completed! " + i);
                     checkSquareToShowColumn(i, squares, 'L');
+                }/* 
+                if(!Bot.turn) {
+                    Main.playerPoints++;
+                    System.out.println(Main.playerPoints + ", " + Main.enemyPoints);
                 }
+                else{
+                    Main.enemyPoints++;
+                    System.out.println(Main.playerPoints + ", " + Main.enemyPoints);
+                }*/
             }
         }
     }
 
+    public int getCountSquare(){
+        return countSquares;
+    }
+
     private void checkSquareToShowColumn(int i, Square squares, char leftOrRight)
     {
+
+        if(squares instanceof SquareEnemy){
+
+        }else{
+
+        }
+        
+        countSquares++;
+        System.out.println(countSquares);
+
         if(i == 35) {if(!squares.getIsActive()[0]) squares.changeColor(0);}
         else if(i == 36) {if(!squares.getIsActive()[5]) squares.changeColor(5);}
         else if(i == 37) {if(!squares.getIsActive()[10]) squares.changeColor(10);}
@@ -499,6 +523,14 @@ public class Lines implements Drawables
 
     private void checkSquareToShowRow(int i, Square squares, char upOrDown)
     {
+        if(squares instanceof SquareEnemy){
+
+        }else{
+
+        }
+        countSquares++;
+        System.out.println(countSquares);
+
         if(i == 30) {if(!squares.getIsActive()[20]) squares.changeColor(20);}
         else if(i == 31) {if(!squares.getIsActive()[21]) squares.changeColor(21);}
         else if(i == 32) {if(!squares.getIsActive()[22]) squares.changeColor(22);}
@@ -558,5 +590,6 @@ public class Lines implements Drawables
         {
             sprite.getTexture().dispose();
         }
+        countSquares = 0;
     }
 }

@@ -45,7 +45,6 @@ public class Bot {
 
     private void checkCompletedSquares(int lineIndex) {
         lines.checkSquare(lineIndex, squaresEnemy);
-        
         //lines.checkSquare(lineIndex, squaresPlayer);
     }
 }

@@ -25,6 +25,8 @@ public class Main extends ApplicationAdapter {
     SquarePlayer squaresPlayer;
     SquareEnemy squaresEnemy;
     Bot bot;
+    int playerPoints;
+    int enemyPoints;
 
     @Override
     public void create() {
@@ -40,20 +42,8 @@ public class Main extends ApplicationAdapter {
         squaresPlayer = new SquarePlayer();
         squaresEnemy = new SquareEnemy();
         bot = new Bot(lines, squaresEnemy, squaresPlayer);
+        currentScreen =Screen.MAIN_MENU;
 
-        Gdx.input.setInputProcessor(new InputAdapter() 
-        {
-            @Override
-            public boolean keyDown(int keyCode)
-            {
-                if(currentScreen == Screen.MAIN_MENU && keyCode == Input.Keys.ENTER)
-                {
-                    currentScreen = Screen.GAME;
-                }
-
-                return true;
-            }
-        });
     }
 
     @Override
@@ -62,33 +52,70 @@ public class Main extends ApplicationAdapter {
 
         if(currentScreen == Screen.GAME)
         {
-            ScreenUtils.clear(233f, 233f, 233f, 1f);
-            camera.update();
-            batch.setProjectionMatrix(camera.combined);
-    
-            dots.draw(batch);
-            text.draw(batch);
-            lines.draw(batch);
-            squaresPlayer.draw(batch);
-            squaresEnemy.draw(batch);
-    
-            Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(mousePos3);
-    
-            Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
-            lines.checkIfMouseIsHovering(mousePos, squaresPlayer, bot);
-            if(bot.turn)
-            {
-                bot.playTurn();
-                bot.turn = false;
+            System.out.println(" POINTS -> " + lines.getCountSquare());
+
+            
+                ScreenUtils.clear(233f, 233f, 233f, 1f);
+                camera.update();
+                batch.setProjectionMatrix(camera.combined);
+        
+                dots.draw(batch);
+                text.draw(batch);
+                lines.draw(batch);
+                squaresPlayer.draw(batch);
+                squaresEnemy.draw(batch);
+        
+                Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.unproject(mousePos3);
+        
+                Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
+                lines.checkIfMouseIsHovering(mousePos, squaresPlayer, bot);
+                if(bot.turn)
+                {
+                    bot.playTurn();
+                    bot.turn = false;
+                }
+                squaresPlayer.setIsActive(squaresEnemy.getIsActive());
+
+            if(lines.getCountSquare() >= 25){
+
+                Gdx.input.setInputProcessor(new InputAdapter() 
+                {
+                    @Override
+                    public boolean keyDown(int keyCode)
+                    {
+                        currentScreen = Screen.MAIN_MENU;
+                        lines = new Lines();
+                        squaresPlayer = new SquarePlayer();
+                        squaresEnemy = new SquareEnemy();
+                        bot = new Bot(lines, squaresEnemy, squaresPlayer);
+
+                        return true;
+                    }
+                });
             }
-            squaresPlayer.setIsActive(squaresEnemy.getIsActive());
+
         }else if(currentScreen == Screen.MAIN_MENU)
         {
+
             ScreenUtils.clear(233f, 233f, 233f, 1f);
             text.draw(batch);
             enterText.draw(batch);
             enterText.animateText();
+
+            Gdx.input.setInputProcessor(new InputAdapter() 
+            {
+                @Override
+                public boolean keyDown(int keyCode)
+                {
+                    if(currentScreen == Screen.MAIN_MENU && keyCode == Input.Keys.ENTER)
+                    {
+                        currentScreen = Screen.GAME;
+                    }
+
+                    return true;
+                }
+            });
         }
 
         batch.end();
