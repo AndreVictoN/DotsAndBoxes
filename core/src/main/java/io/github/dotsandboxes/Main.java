@@ -25,8 +25,6 @@ public class Main extends ApplicationAdapter {
     SquarePlayer squaresPlayer;
     SquareEnemy squaresEnemy;
     Bot bot;
-    int playerPoints;
-    int enemyPoints;
 
     @Override
     public void create() {
@@ -37,12 +35,12 @@ public class Main extends ApplicationAdapter {
         //image = new Texture("libgdx.png");
         dots = new Dots();
         text = new Text();
-        enterText = new Text(Screen.MAIN_MENU);
+        enterText = new Text(Screen.MAIN_MENU, 0, 0);
         lines = new Lines();
         squaresPlayer = new SquarePlayer();
         squaresEnemy = new SquareEnemy();
         bot = new Bot(lines, squaresEnemy, squaresPlayer);
-        currentScreen =Screen.MAIN_MENU;
+        currentScreen = Screen.MAIN_MENU;
 
     }
 
@@ -52,9 +50,10 @@ public class Main extends ApplicationAdapter {
 
         if(currentScreen == Screen.GAME)
         {
-            System.out.println(" POINTS -> " + lines.getCountSquare());
+            System.out.println("\nTOTAL POINTS -> " + lines.getCountSquare());
+            System.out.println("Player points -> " + lines.playerPoints);
+            System.out.println("Enemy points -> " + lines.enemyPoints);
 
-            
                 ScreenUtils.clear(233f, 233f, 233f, 1f);
                 camera.update();
                 batch.setProjectionMatrix(camera.combined);
@@ -84,7 +83,7 @@ public class Main extends ApplicationAdapter {
                     @Override
                     public boolean keyDown(int keyCode)
                     {
-                        currentScreen = Screen.MAIN_MENU;
+                        currentScreen = Screen.RESULTS_MENU;
                         lines = new Lines();
                         squaresPlayer = new SquarePlayer();
                         squaresEnemy = new SquareEnemy();
@@ -95,9 +94,9 @@ public class Main extends ApplicationAdapter {
                 });
             }
 
-        }else if(currentScreen == Screen.MAIN_MENU)
+        }
+        else if(currentScreen == Screen.MAIN_MENU || currentScreen == Screen.RESULTS_MENU)
         {
-
             ScreenUtils.clear(233f, 233f, 233f, 1f);
             text.draw(batch);
             enterText.draw(batch);
@@ -108,7 +107,7 @@ public class Main extends ApplicationAdapter {
                 @Override
                 public boolean keyDown(int keyCode)
                 {
-                    if(currentScreen == Screen.MAIN_MENU && keyCode == Input.Keys.ENTER)
+                    if((currentScreen == Screen.MAIN_MENU || currentScreen == Screen.RESULTS_MENU) && keyCode == Input.Keys.ENTER)
                     {
                         currentScreen = Screen.GAME;
                     }

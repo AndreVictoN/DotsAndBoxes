@@ -20,13 +20,22 @@ public class Text implements Drawables
         font.getData().setScale(1.5f);
     }
 
-    public Text(Screen screen)
+    public Text(Screen screen, int playerPoints, int enemyPoints)
     {
         font = new BitmapFont(Gdx.files.internal("dotline/Dotline.fnt"), Gdx.files.internal("dotline/Dotline.png"), false);
 
         if(screen == Screen.MAIN_MENU) 
         {
             text = "Press ENTER to Start";
+            font.getData().setScale(1);
+        }
+        else if(screen == Screen.RESULTS_MENU && (playerPoints > enemyPoints)) {
+            text = "You Won! \nPress ENTER to Start";
+            font.getData().setScale(1);
+        }
+        if(screen == Screen.RESULTS_MENU && (playerPoints < enemyPoints)) 
+        {
+            text = "You Lost... \nPress ENTER to Start";
             font.getData().setScale(1);
         }
         else

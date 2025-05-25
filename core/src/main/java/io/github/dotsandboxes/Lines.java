@@ -32,6 +32,9 @@ public class Lines implements Drawables
     private boolean[] isHovering;
     private boolean[] isClicked;
     private int countSquares;
+    
+    public int playerPoints;
+    public int enemyPoints;
 
     public Lines()
     {
@@ -343,9 +346,9 @@ public class Lines implements Drawables
     {
 
         if(squares instanceof SquareEnemy){
-
-        }else{
-
+            enemyPoints++;
+        }else if (squares instanceof SquarePlayer){
+            playerPoints++;
         }
         
         countSquares++;
