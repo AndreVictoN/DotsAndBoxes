@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Square implements Drawables
 {
-    private ArrayList<Sprite> squares;
+    private final ArrayList<Sprite> squares;
     protected Texture squareTexture;
     private boolean[] isActive;
 

@@ -5,17 +5,15 @@ import java.util.List;
 import java.util.Random;
 
 public class Bot {
-    private Lines lines;
-    private SquareEnemy squaresEnemy;
-    private SquarePlayer squaresPlayer;
-    private Random random;
+    private final Lines lines;
+    private final SquareEnemy squaresEnemy;
+    private final Random random;
     public boolean turn;
     public boolean completedSquare = false;
 
     public Bot(Lines lines, SquareEnemy squaresEnemy, SquarePlayer squaresPlayer) {
         this.lines = lines;
         this.squaresEnemy = squaresEnemy;
-        this.squaresPlayer = squaresPlayer;
         this.random = new Random();
         this.turn = false; 
     }

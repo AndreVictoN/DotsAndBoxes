@@ -11,8 +11,6 @@ public class Text implements Drawables
 {
     BitmapFont font;
     CharSequence text;
-    int playerPoints;
-    int enemyPoints;
     boolean canFade = false;
 
     public Text()
