@@ -58,76 +58,77 @@ public class Main extends ApplicationAdapter {
 
         if(currentScreen == Screen.GAME)
         {
-            /*System.out.println("Player points -> " + lines.playerPoints);
-            System.out.println("Enemy points -> " + lines.enemyPoints);*/
-
-            pointsText.setResults(currentScreen, lines.playerPoints, lines.enemyPoints);
-            if(!song.isPlaying()) song.play();
-            ScreenUtils.clear(233f, 233f, 233f, 1f);
-            camera.update();
-            batch.setProjectionMatrix(camera.combined);
-        
-            dots.draw(batch);
-            text.draw(batch);
-            lines.draw(batch);
-            squaresPlayer.draw(batch);
-            squaresEnemy.draw(batch);
-            pointsText.draw(batch);
-        
-            Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(mousePos3);
-        
-            Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
-            lines.checkIfMouseIsHovering(mousePos, squaresPlayer, bot);
-            if(bot.turn)
-            {
-                bot.playTurn();
-            }
-            squaresPlayer.setIsActive(squaresEnemy.getIsActive());
-
-            if(lines.playerPoints + lines.enemyPoints == 25)
-            {
-                currentScreen = Screen.RESULTS_MENU;
-            }
+            screenGame();
         }
         else if(currentScreen == Screen.MAIN_MENU || currentScreen == Screen.RESULTS_MENU)
         {
-            if(song.isPlaying()) song.stop();
-            ScreenUtils.clear(233f, 233f, 233f, 1f);
-
-            if(currentScreen == Screen.MAIN_MENU)
-            {
-                text.draw(batch);
-                enterText.draw(batch);
-                enterText.animateText();
-            }else if(currentScreen == Screen.RESULTS_MENU)
-            {
-                text.draw(batch);
-                textResults.setResults(currentScreen, lines.playerPoints, lines.enemyPoints);
-                //System.out.println(textResults.text);
-                textResults.draw(batch);
-                textResults.animateText();
-            }
-
-            Gdx.input.setInputProcessor(new InputAdapter() 
-            {
-                @Override
-                public boolean keyDown(int keyCode)
-                {
-                    if((currentScreen == Screen.MAIN_MENU || currentScreen == Screen.RESULTS_MENU) && keyCode == Input.Keys.ENTER)
-                    {
-                        lines.resetGame();
-                        squaresPlayer.resetGame();
-                        squaresEnemy.resetGame();
-                        currentScreen = Screen.GAME;
-                    }
-
-                    return true;
-                }
-            });
+            menus();
         }
 
         batch.end();
+    }
+
+    public void screenGame()
+    {
+        pointsText.setResults(currentScreen, lines.playerPoints, lines.enemyPoints);
+        if(!song.isPlaying()) song.play();
+        ScreenUtils.clear(233f, 233f, 233f, 1f);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+    
+        dots.draw(batch);
+        text.draw(batch);
+        lines.draw(batch);
+        squaresPlayer.draw(batch);
+        squaresEnemy.draw(batch);
+        pointsText.draw(batch);
+    
+        Vector3 mousePos3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos3);
+    
+        Vector2 mousePos = new Vector2(mousePos3.x, mousePos3.y);
+        lines.checkIfMouseIsHovering(mousePos, squaresPlayer, bot);
+        if(bot.turn)
+        {
+            bot.playTurn();
+        }
+        squaresPlayer.setIsActive(squaresEnemy.getIsActive());
+
+        if(lines.playerPoints + lines.enemyPoints == 25)
+        {
+            currentScreen = Screen.RESULTS_MENU;
+        }
+    }
+
+    public void menus()
+    {
+        if(song.isPlaying()) song.stop();
+        ScreenUtils.clear(233f, 233f, 233f, 1f);
+
+        if(currentScreen == Screen.MAIN_MENU){
+            text.draw(batch);
+            enterText.draw(batch);
+            enterText.animateText();
+        }else if(currentScreen == Screen.RESULTS_MENU){
+            text.draw(batch);
+            textResults.setResults(currentScreen, lines.playerPoints, lines.enemyPoints);
+            textResults.draw(batch);
+            textResults.animateText();
+        }
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keyCode){
+                if((currentScreen == Screen.MAIN_MENU || currentScreen == Screen.RESULTS_MENU) && keyCode == Input.Keys.ENTER){
+                    lines.resetGame();
+                    squaresPlayer.resetGame();
+                    squaresEnemy.resetGame();
+                    currentScreen = Screen.GAME;
+                }
+
+                return true;
+            }
+        });
     }
 
     @Override
