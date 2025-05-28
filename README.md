@@ -1,8 +1,8 @@
-# 🎮 Projeto LibGDX – CEFET-MG
+# 💻 Projeto LibGDX – CEFET-MG
 
-Este projeto foi desenvolvido como parte da disciplina **Linguagem e Técnicas de Programação 2**, do curso de **Informática 3** do **CEFET-MG**, ministrada pelo professor **Alisson Rodrigo dos Santos**.
+Este projeto foi desenvolvido para a disciplina **Linguagem e Técnicas de Programação 2**, do curso de **Informática 3** do **CEFET-MG**, lessionada pelo professor **Alisson Rodrigo dos Santos**.
 
-## 👨‍💻 Integrantes
+## 👨‍💼 Integrantes
 
 - André Victor Gonçalves Nascimento  
 - Pietro Campos de Sousa  
@@ -10,7 +10,7 @@ Este projeto foi desenvolvido como parte da disciplina **Linguagem e Técnicas d
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 💿 Como Executar o Projeto
 
 ### No VS Code
 
