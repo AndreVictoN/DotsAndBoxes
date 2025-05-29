@@ -29,8 +29,8 @@ Este projeto foi desenvolvido para a disciplina **Linguagem e Técnicas de Progr
 ### ✅ Requisitos
 
 - Java JDK 17 ou superior (para evitar erros de compatibildade, o uso do JDK 17 é recomendado) 
-- Gradle (incluído no projeto via wrapper)  
-- Extensões recomendadas no VS Code:  
+- Gradle (incluído no projeto)  
+- Extensões recomendadas:  
   - Pacote: *Language Support for Java™ by Red Hat*  
   - *Gradle for Java*  
 
