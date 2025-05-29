@@ -22,7 +22,7 @@ Este projeto foi desenvolvido para a disciplina **Linguagem e Técnicas de Progr
 
 4. Abra o arquivo `Lwjgl3Launcher.java` dentro da pasta `lwjgl3/src/main/java/io/github/dotsandboxes/lwjgl3`.
 
-5. Use o comando **Run Java** (botão de "play" no topo da janela do arquivo) para executar o projeto.
+5. Use o comando **Run Java** (botão de "play" no topo da janela) para executar o projeto.
 
 ---
 
